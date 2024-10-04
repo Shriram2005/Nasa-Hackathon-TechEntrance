@@ -57,6 +57,10 @@ nav .nav-links a {
     font-size: 18px;
 }
 
+nav .nav-links a:hover {
+    text-decoration: underline;
+}
+
 .menu-toggle {
     display: none;
 }
@@ -153,12 +157,14 @@ nav .nav-links a {
 
 /* exoplantes info section styles ----------------------- */
 
-/* Exoplanets Info Section */
 .exoplanets-info {
     padding: 60px 20px;
-    background: url('path/to/your/background-image.jpg') no-repeat center center/cover;
+    /* Background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),url("../contents/space-bg2.jpg");  */
+    background-position: center; 
+    background-size: cover;
     text-align: center;
     color: white;
+    /* border: 2px solid white; */
 }
 
 .exoplanets-info .container {
