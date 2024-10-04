@@ -11,14 +11,15 @@ body {
 }
 
 .header {
+
+}
+
+#news-heading {
+    font-size: 2.5rem;
     background-color: #222;
     color: white;
     text-align: center;
     padding: 20px;
-}
-
-h1 {
-    font-size: 2.5rem;
 }
 
 main {
