@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Exoplanet Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+        }
+
+        .option {
+            background-color: #e7e7e7;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #d7d7d7;
+        }
+
+        .option-label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .next-button, .prev-button, .submit-button, .review-button {
+            background: linear-gradient(to right, #87CEEB, #66B2D8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .next-button:hover, .prev-button:hover, .submit-button:hover, .review-button:hover {
+            background: linear-gradient(to right, #66B2D8, #4CAF50);
+        }
+
+        .next-button:disabled, .prev-button:disabled {
+            background-color: #ccc;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e7e7e7;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .correct-answer {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .wrong-answer {
+            background-color: #FF6347;
+            color: white;
+        }
+
+        .correct-label {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .wrong-label {
+            font-weight: bold;
+            color: #FF6347;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Exoplanet Quiz</h1>
+        <div id="question-container">
+            <div id="question"></div>
+            <div id="options" class="options-container"></div>
+        </div>
+        <div class="button-container">
+            <button id="prev-button" class="prev-button" disabled>Previous</button>
+            <button id="next-button" class="next-button" disabled>Next</button>
+        </div>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div id="result" class="result-container"></div>
+    </div>
+    <script>
+        const questions = [
+            { question: "What is an exoplanet?", options: ["A planet outside our solar system", "A planet in our solar system", "A star", "A comet"], answer: 0 },
+            { question: "What is the most common method for detecting exoplanets?", options: ["Transit method", "Gravitational lensing", "Direct imaging", "Radial velocity method"], answer: 0 },
+            { question: "Which of these exoplanets is located in the habitable zone?", options: ["Gliese 581g", "Jupiter", "Mars", "Venus"], answer: 0 },
+            { question: "What is a 'Hot Jupiter'?", options: ["A gas giant very close to its star", "A planet hotter than the sun", "A rocky planet", "A small icy planet"], answer: 0 },
+            { question: "What does the 'Goldilocks Zone' refer to?", options: ["A region around a star where life can exist", "A zone with no planets", "A star system with three planets", "A planet that is too cold"], answer: 0 },
+            { question: "Which telescope is used for detecting exoplanets?", options: ["Kepler Telescope", "Hubble Telescope", "Spitzer Telescope", "Galileo Telescope"], answer: 0 },
+            { question: "What is a 'Super-Earth'?", options: ["A planet more massive than Earth but smaller than Uranus", "An Earth-like planet", "A planet orbiting a red dwarf", "A gas giant"], answer: 0 },
+            { question: "Which star is closest to the Solar System and hosts an exoplanet?", options: ["Proxima Centauri", "Betelgeuse", "Sirius", "Alpha Centauri"], answer: 0 },
+            { question: "Which type of exoplanet is most commonly found?", options: ["Gas giants", "Earth-like planets", "Rocky planets", "Ice giants"], answer: 0 },
+            { question: "What does the term 'rogue planet' refer to?", options: ["A planet that does not orbit any star", "A planet moving out of its solar system", "A starless black hole", "A planet orbiting multiple stars"], answer: 0 },
+            // Add 10 more questions
+            { question: "Which is the nearest exoplanet?", options: ["Proxima b", "Kepler-452b", "Jupiter", "Venus"], answer: 0 },
+            { question: "Which of the following is a gas giant exoplanet?", options: ["Kepler-7b", "Earth", "Mars", "Venus"], answer: 0 },
+            { question: "What is the transit method used for?", options: ["Detecting exoplanets", "Detecting stars", "Measuring distance between planets", "Finding black holes"], answer: 0 },
+            { question: "Which space telescope is primarily designed to search for exoplanets?", options: ["Kepler", "James Webb", "Chandra", "Spitzer"], answer: 0 },
+            { question: "What is the primary characteristic of a 'rocky planet'?", options: ["Solid surface", "Gas surface", "Icy surface", "Dusty surface"], answer: 0 },
+            { question: "Which is the largest exoplanet discovered so far?", options: ["HD 100546 b", "Kepler-452b", "Mars", "Gliese 581g"], answer: 0 },
+            { question: "What does the 'habitable zone' mean?", options: ["Area where liquid water could exist", "Zone with only gas planets", "Zone with no stars", "Cold region in space"], answer: 0 },
+            { question: "Which planet in our solar system is often compared to exoplanets?", options: ["Jupiter", "Saturn", "Mars", "Venus"], answer: 0 },
+            { question: "How are exoplanets often named?", options: ["By their host star", "By their size", "By their color", "By their temperature"], answer: 0 },
+            { question: "Which method can measure the wobble of stars caused by planets?", options: ["Radial velocity", "Direct imaging", "Gravitational lensing", "Transit method"], answer: 0 }
+        ];
+
+   
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOptions = Array(questions.length).fill(-1);
+
+    const questionContainer = document.getElementById('question-container');
+    const questionElement = document.getElementById('question');
+    const optionsContainer = document.getElementById('options');
+    const nextButton = document.getElementById('next-button');
+    const prevButton = document.getElementById('prev-button');
+    const resultContainer = document.getElementById('result');
+    const progressElement = document.getElementById('progress');
+
+    function showQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+        optionsContainer.innerHTML = '';
+
+        currentQuestion.options.forEach((option, index) => {
+            const button = document.createElement('div');
+            button.classList.add('option');
+            button.innerHTML = `<span class="option-label">${String.fromCharCode(65 + index)}.</span> ${option}`;
+            button.addEventListener('click', () => selectOption(index));
+            optionsContainer.appendChild(button);
+
+            if (selectedOptions[currentQuestionIndex] === index) {
+                button.style.backgroundColor = '#4CAF50'; 
+            }
+        });
+
+        nextButton.disabled = true;
+        prevButton.disabled = currentQuestionIndex === 0;
+        updateProgressBar();
+    }
+
+    
+
+    function selectOption(index) {
+        selectedOptions[currentQuestionIndex] = index;
+        const optionButtons = optionsContainer.children;
+        Array.from(optionButtons).forEach((button, i) => {
+            button.style.backgroundColor = (i === index) ? '#4CAF50' : '#e7e7e7';
+        });
+        nextButton.disabled = false;
+    }
+
+    function updateProgressBar() {
+        const filledWidth = (selectedOptions.filter(option => option !== -1).length / questions.length) * 100;
+        progressElement.style.width = `${filledWidth}%`;
+    }
+
+    nextButton.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showSubmit();
+        }
+        updateProgressBar(); // Ensure the progress bar updates on the last question
+    });
+
+    prevButton.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
+        }
+    });
+
+    function showSubmit() {
+        questionContainer.style.display = 'none';
+        nextButton.style.display = 'none';
+        prevButton.style.display = 'none';
+        resultContainer.innerHTML = `<button class="submit-button" id="submit-button">Submit</button>`;
+        document.getElementById('submit-button').addEventListener('click', showResult);
+    }
+
+    function showResult() {
+        let correctAnswers = 0;
+        questions.forEach((question, index) => {
+            const isCorrect = selectedOptions[index] === question.answer;
+            if (isCorrect) correctAnswers++;
+        });
+        resultContainer.innerHTML = `<h2>Your score is: ${correctAnswers} / ${questions.length}</h2>
+                                     <button class="review-button" id="review-button">Review Answers</button>`;
+        document.getElementById('review-button').addEventListener('click', showReview);
+    }
+
+    function showReview() {
+        questionContainer.style.display = 'block';
+        resultContainer.innerHTML = '';
+
+        // Clear out any existing content in optionsContainer
+        optionsContainer.innerHTML = '';
+        
+        // Display all questions and answers for review at once
+        questions.forEach((question, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question-review');
+            questionDiv.innerHTML = `<strong>${index + 1}. ${question.question}</strong>`;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options-container');
+
+            question.options.forEach((option, i) => {
+                const optionButton = document.createElement('div');
+                optionButton.classList.add('option');
+                optionButton.innerHTML = `<span class="option-label">${String.fromCharCode(65 + i)}.</span> ${option}`;
+                
+                if (selectedOptions[index] === i && i === question.answer) {
+                    optionButton.classList.add('correct-answer'); // Correct answer selected
+                } else if (selectedOptions[index] === i) {
+                    optionButton.classList.add('wrong-answer'); // Wrong answer selected
+                    optionButton.innerHTML += ` <span class="correct-label">(Correct: ${question.options[question.answer]})</span>`;
+                } else if (i === question.answer) {
+                    optionButton.classList.add('correct-answer'); // Show the correct answer
+                }
+
+                optionsDiv.appendChild(optionButton);
+            });
+
+            questionDiv.appendChild(optionsDiv);
+            optionsContainer.appendChild(questionDiv);
+        });
+    }
+
+    showQuestion();
+</script>
+
+</body>
+</html>
